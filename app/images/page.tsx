@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
@@ -18,7 +19,7 @@ async function requireUser() {
   return data.user;
 }
 
-export default async function ImagesPage() {
+async function ImagesContent() {
   await requireUser();
 
   return (
@@ -28,5 +29,19 @@ export default async function ImagesPage() {
         Browse or manage imagery related to your wildfire predictions here.
       </p>
     </section>
+  );
+}
+
+export default function ImagesPage() {
+  return (
+    <Suspense
+      fallback={
+        <section className="mx-auto max-w-5xl px-5 py-16 text-muted-foreground">
+          Loading images...
+        </section>
+      }
+    >
+      <ImagesContent />
+    </Suspense>
   );
 }

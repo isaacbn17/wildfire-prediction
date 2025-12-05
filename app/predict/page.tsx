@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
@@ -18,7 +19,7 @@ async function requireUser() {
   return data.user;
 }
 
-export default async function PredictPage() {
+async function PredictContent() {
   await requireUser();
 
   return (
@@ -29,5 +30,19 @@ export default async function PredictPage() {
         models here.
       </p>
     </section>
+  );
+}
+
+export default function PredictPage() {
+  return (
+    <Suspense
+      fallback={
+        <section className="mx-auto max-w-5xl px-5 py-16 text-muted-foreground">
+          Loading predict page...
+        </section>
+      }
+    >
+      <PredictContent />
+    </Suspense>
   );
 }
